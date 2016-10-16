@@ -13,7 +13,7 @@
 
 `python manage.py makemigrations`
 
-`manage.py migrate`
+`python manage.py migrate`
 
 - 管理员账户
 

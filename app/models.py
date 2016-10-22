@@ -12,6 +12,7 @@ class book(models.Model):
     grade_book = models.CharField(max_length=30)
     discount_book = models.IntegerField(default=3)
     major_book = models.CharField(max_length=30)
+    photo_book = models.FileField(upload_to='upload/')
 
     def __str__(self):
         return self.name_book

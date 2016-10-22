@@ -6,6 +6,9 @@ from datetime import datetime
 from django.conf.urls import url
 import django.contrib.auth.views
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 import app.forms
 import app.views
 
@@ -46,4 +49,4 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^upload_book$',app.views.upload_book),
     url(r'^user_book_detail$',app.views.user_book_detail),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,7 +1,7 @@
 {% extends "app/layout.html" %}
 
 {% block content %}
-    <form action="" method="post" class="form-horizontal">
+    <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
                 {% csrf_token %}
                 <h4>发布旧书</h4>
                 <hr />
@@ -27,6 +27,12 @@
                     <label for="major_book" class="col-md-2 control-label">专业</label>
                     <div class="col-md-10">
                         {{ book_form.major_book }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="photo_book" class="col-md-2 control-label">封面</label>
+                    <div class="col-md-10">
+                        {{ book_form.photo_book }}
                     </div>
                 </div>
 

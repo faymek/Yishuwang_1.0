@@ -16,7 +16,7 @@ from django.contrib import auth
 from django import forms
 class UserForm(forms.Form):
   email=forms.EmailField(label='email',max_length=50,widget=forms.TextInput(attrs={'size': 30,}))
-  password=forms.CharField(label='password',max_length=30,widget=forms.PasswordInput(attrs={'size': 20,}))
+  password1=forms.CharField(label='password',max_length=30,widget=forms.PasswordInput(attrs={'size': 20,}))
   username=forms.CharField(label='username',max_length=30,widget=forms.TextInput(attrs={'size': 20,}))
   password2= forms.CharField(label='Confirm',widget=forms.PasswordInput)
 
@@ -61,55 +61,61 @@ def about(request):
         }
     )
 
+# def register(request):
+#     if request.method == 'POST':
+#         form = UserForm(request.POST)
+#
+#         if form.is_valid():
+#             username = form.cleaned_data['username']
+#             email = form.cleaned_data['email']
+#             password = form.cleaned_data['password']
+#             password2 = form.cleaned_data['password2']
+#         else:
+#             form = UserForm()
+#
+#         user=User.objects.create_user(username, email, password)
+#         user.save()
+#         newUser = auth.authenticate(username=username, password=password)
+#         if newUser is not None:
+#             auth.login(request, newUser)
+#             return HttpResponseRedirect("/")
+#     else:
+#         form= UserForm()
+#         return render(request, "app/register.html", {'form': form})
+#
+#     return render(request, 'app/register.html')
 def register(request):
-    # if request.method == 'POST':
-    #     if not request.POST.get['username']:
-    #         errors.append('Please Enter username')
-    #     else:
-    #         account = request.POST.get('account')
-    #     if not request.POST.get('email'):
-    #         errors.append('Please Enter email')
-    #     else:
-    #         email = request.POST.get('email')
-    #     if not request.POST.get('password'):
-    #         errors.append('Please Enter password')
-    #     else:
-    #         password = request.POST.get('password')
-    #     if not request.POST.get('password2'):
-    #         errors.append('Please Enter password2')
-    #     else:
-    #         password2 = request.POST.get('password2')
-    #
-    #     if password is not None and password2 is not None:
-    #         if password == password2:
-    #             CompareFlag = True
-    #         else:
-    #             errors.append('password2 is diff password ')
+    if request.method=='POST':
+        errors=[]
+        form=UserForm(request.POST)
 
-
-                # if account is not None and  email is not None and CompareFlag :
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            password2 = form.cleaned_data['password2']
-        else:
-            form = UserForm()
-
-        user=User.objects.create_user(username, email, password)
+        if not form.is_valid():
+            return render(request, "app/register.html",{'form':form,'errors':errors})
+        username = form.cleaned_data['username']
+        email = form.cleaned_data['email']
+        password1 = form.cleaned_data['password1']
+        password2= form.cleaned_data['password2']
+        if password1!=password2:
+            errors.append("两次输入的密码不一致!")
+            return render(request, "app/register.html",{'form':form,'errors':errors})
+        filterResult=User.objects.filter(username=username)
+        if len(filterResult)>0:
+           errors.append("用户名已存在")
+           return render(request, "app/register.html",{'form':form,'errors':errors})
+        user = User.objects.create_user(username,email,password1)
         user.save()
-        newUser = auth.authenticate(username=username, password=password)
+        #登录前需要先验证
+        newUser=auth.authenticate(username=username,password=password1)
         if newUser is not None:
             auth.login(request, newUser)
             return HttpResponseRedirect("/")
     else:
-        form= UserForm()
-        return render(request, "app/register.html", {'form': form})
+        form =UserForm()
+        return render(request, "app/register.html",{'form':form,'title':'注册','year':datetime.now().year})
 
-    return render(request, 'app/register.html')
+    return render(request, "app/register.html")
+
+
 class BookForm(forms.Form):
     name_book = forms.CharField(max_length=50)
     #年级的下拉框
@@ -138,32 +144,37 @@ class BookForm(forms.Form):
     )
 
     major_book = forms.ChoiceField(choices=major_choice)
+    photo_book = forms.FileField()
 
 
 def upload_book(request):
     if request.method == 'POST':
-        book_form = BookForm(request.POST)
+        book_form = BookForm(request.POST, request.FILES)
         if book_form.is_valid():
             name = book_form.cleaned_data['name_book']
             grade = book_form.cleaned_data['grade_book']
             discount = book_form.cleaned_data['discount_book']
             major = book_form.cleaned_data['major_book']
-
+            photo =book_form.cleaned_data['photo_book']
+            # acquire courrent user
+            user = request.user
+            book = user.book_set.create(name_book=name, grade_book=grade, discount_book=discount, major_book=major,
+                                        photo_book=photo)
+            book.save()
+            return HttpResponseRedirect('/user_book_detail')
         else:
             book_form = BookForm()
-        #acquire courrent user
-        user = request.user
-        book = user.book_set.create(name_book = name ,grade_book = grade ,discount_book = discount,major_book = major)
-        book.save()
-        return HttpResponseRedirect('/user_book_detail')
+            return HttpResponseRedirect('/upload_book')
     else:
         book_form = BookForm()
-        return render(request, "app/upload_book.html", {'book_form': book_form})
-    # return render(request,'app/upload_book.html')
+        return render(request, "app/upload_book.html", {'book_form': book_form,'title':'发布旧书','year':datetime.now().year})
 
 
 def user_book_detail(request):
     user = request.user
     upoladed_book = user.book_set.all()
-    context = {'uploaded_book_list':upoladed_book}
+    context = {'uploaded_book_list':upoladed_book,
+               'title': '我的书籍',
+               'year': datetime.now().year,
+               }
     return render(request,'app/user_book_detail.html',context)

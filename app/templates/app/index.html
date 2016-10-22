@@ -1,33 +1,22 @@
 {% extends "app/layout.html" %}
 
 {% block content %}
+    <h1>易书网</h1>
+    {% if book_list_all %}
+        <ul>
+        {% for book in book_list_all %}
+            <li>书名：{{ book.name_book }}</li>
+            <li>年级：{{ book.grade_book }}</li>
+            <li>折扣：{{ book.discount_book }}</li>
+            <li>专业：{{ book.major_book }}</li>
+            <li>发布者：{{ book.master }}</li>
+            <li>发布者邮箱：{{ book.master.email }}</li>
 
-<div class="jumbotron">
-    <h1>Django</h1>
-    <p class="lead">Django is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://www.djangoproject.com/" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
-</div>
-
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            Django gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://www.djangobook.com/en/2.0/index.html">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>The Python Package Index is a repository of software for the Python programming language.</p>
-        <p><a class="btn btn-default" href="https://pypi.python.org/pypi">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Microsoft Azure</h2>
-        <p>You can easily publish to Microsoft Azure using Python Tools for Visual Studio. Find out how you can host your application using a free trial today.</p>
-        <p><a class="btn btn-default" href="http://azure.microsoft.com">Learn more &raquo;</a></p>
-    </div>
-</div>
+            <hr />  <!--想弄个分割线出来但是效果不太一样，可能是css的原因-->
+        {% endfor %}
+        </ul>
+    {% endif %}
 
 {% endblock %}
+
+

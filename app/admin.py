@@ -1,9 +1,11 @@
 from django.contrib import admin
-from .models import UserProfile
+from django.contrib.auth.models import User
+from app.models import book
+
+class bookAdmin(admin.ModelAdmin):
+    list_dispaly = ('name_book','grade_book')
+
+admin.site.register(book,bookAdmin)
 
 
-class UserProfileAdmin(admin.ModelAdmin):
-    fields = ('user', 'description',)
 
-
-admin.site.register(UserProfile, UserProfileAdmin)

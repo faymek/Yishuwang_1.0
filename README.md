@@ -23,4 +23,6 @@
 
 - 运行
 
-`python manage.py runserver ` 
+`python manage.py runserver `
+
+python manage.py migrate your_app --fake

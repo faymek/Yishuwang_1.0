@@ -2,10 +2,25 @@
 
 {% block content %}
     <h1>易书网</h1>
-    {% if book_list_all %}
+    <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="keyword" class="col-md-2 control-label">请输入课程名称</label>
+                    <div class="col-md-10">
+                        {{ form.keyword }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="hidden" name="next" value="/" />
+                        <input type="submit" value="搜索" class="btn btn-default" />
+                    </div>
+                </div>
+    </form>
+    {% if books %}
         <ul>
-        {% for book in book_list_all %}
-            <li>书名：{{ book.name_book }}</li>
+        {% for book in books %}
+            <li>课程名称：{{ book.name_book }}</li>
             <li>年级：{{ book.grade_book }}</li>
             <li>折扣：{{ book.discount_book }}</li>
             <li>专业：{{ book.major_book }}</li>
@@ -16,6 +31,21 @@
             <hr />  <!--想弄个分割线出来但是效果不太一样，可能是css的原因-->
         {% endfor %}
         </ul>
+        <div class="pagination">
+    <span class="step-links">
+        {% if books.has_previous %}
+            <a href="?page={{ books.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ books.number }} of {{ books.paginator.num_pages }}.
+        </span>
+
+        {% if books.has_next %}
+            <a href="?page={{ books.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
     {% endif %}
 
 {% endblock %}

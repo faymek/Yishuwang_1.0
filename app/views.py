@@ -184,3 +184,4 @@ def delete_book(request,book_id):
         return HttpResponseRedirect('/login')
     return HttpResponseRedirect('/user_book_detail')
 
+

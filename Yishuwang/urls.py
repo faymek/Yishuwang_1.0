@@ -49,5 +49,7 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^upload_book$',app.views.upload_book),
     url(r'^user_book_detail$',app.views.user_book_detail),
-    url(r'^delete_book/(?P<book_id>\d+)',app.views.delete_book)
+    url(r'^delete_book/(?P<book_id>\d+)',app.views.delete_book),
+  
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+   

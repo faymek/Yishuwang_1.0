@@ -26,3 +26,8 @@
 `python manage.py runserver `
 
 python manage.py migrate your_app --fake
+
+
+# 现在已经上线
+
+网址是 http://yishu.prowu.cn
